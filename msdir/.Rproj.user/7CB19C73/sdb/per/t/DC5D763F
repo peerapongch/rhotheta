@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# Inference about theta( 4Nu) from an observation of the number of segregating \n#     sites at a locus with recombination.\n#\n#  The following script will generate independent draws from the\n# posterior distribution of theta conditional on the observed \n# number of segregating sites is equal to 14 (nsam=10) and assuming the prior\n# distribution of theta is uniform on the interval (0,20) and the recombination\n# parameter (rho=4Nr) equals 20. The method is a simple rejection scheme.  \n# From these draws from the posterior distribution one can estimate the density\n# of the posterior distribution and plot this distribution.  The script plots this\n# estimated distribution.  The script below also generates draws from the posterior\n# distribution under the\n# assumption that the recombination rate is zero.  For this case the probabiility\n# of 14 segregating sites can be calculated and compared to the above densities.\n# This is also done with the following script.\n#\n# The executables ms and dist3 need to be in the workng directory.\n#  These are compiled as follows:\n#  ./clms\n#  gcc -o dist3 dist3.c -lm\n#\n#  The pdf file, thetabayesfig.pdf shows the plot produced by this script.\n\n# These take a minute or two.\n#  For rho=20.  :\nmyunif <- runif(30000,max=20.0)   # draws from the prior distribution of theta\n write(myunif,file=\"|./ms 10 30000 -t tbs -r 20. 1000 | grep 'segsites: 14$' -B 1 | grep '//' | cut -f 2  >msout\")\n thetas <- scan(\"msout\")    # posterior theta''s \n plot(density(thetas), xlim=c(0,20), xlab=\"theta\" )\n rug(thetas)\n\n#  For rho=0.  : \nmyunif <- runif(30000,max=20.0)\n write(myunif,file=\"|./ms 10 30000 -t tbs -r 0. 1000 | grep 'segsites: 14$' -B 1 | grep '//' | cut -f 2  >msout\")\n thetas <- scan(\"msout\")\n lines(density(thetas), col=\"green\" )\n\n# The following calculates P(S=14| theta) for theta = 1, 2, 3, ..., 20 under\n#  the assumption that rho=0, and plots\n# these values (normalized by the sum of all of them.)  Uses the program dist3.c \n# Plots the results on the above plot.\n\nmycall2 <- paste(c(\"./dist3 10 14\", 1:20, \" >mylik.out\"), collapse=\" \" )\nsystem(mycall2)\nmylik1 <- scan(\"mylik.out\")\ndim(mylik1) <- c(2,20)\nmylik2 <- t( mylik1)\npoints( mylik2[,1],mylik2[,2]/sum(mylik2[,2]) )\n",
+    "created" : 1509019605744.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2262173572",
+    "id" : "DC5D763F",
+    "lastKnownWriteTime" : 1163128348,
+    "last_content_update" : 1163128348,
+    "path" : "C:/msdir/R_example_1/thetabayes.R",
+    "project_path" : "R_example_1/thetabayes.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
